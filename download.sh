@@ -10,12 +10,15 @@ plugin() {
 download_genome() {
     local url=$1
     local name=$2
-    wget "${url}" -O ${DATA_DIR}/${name}.tar.gz
+    if [[ ! -f ./data/${name}.tar.gz ]]
+    then
+        wget "${url}" -O ./data/${name}.tar.gz
+    fi
     plugin
     genomepy install \
         -p local \
         -l ${name} \
-        ${DATA_DIR}/${name}.tar.gz
+        ./data/${name}.tar.gz
 }
 
 download_geo() {
@@ -23,10 +26,12 @@ download_geo() {
     geofetch -i ${gse} \
         --processed \
         --data-source all \
-        --geo-folder ${DATA_DIR} \
-        -m ${DATA_DIR}
+        --geo-folder ./data \
+        -m ./data
 }
+
+mkdir -p ./data
 
 # download_genome "https://hgdownload.soe.ucsc.edu/goldenPath/mm10/bigZips/chromFa.tar.gz" "GRCm38"
 # download_genome "https://hgdownload.soe.ucsc.edu/goldenPath/mm9/bigZips/chromFa.tar.gz" "GRCm37"
-download_genome "https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/chromFa.tar.gz" "GRCh37"
+# download_genome "https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/chromFa.tar.gz" "GRCh37"
